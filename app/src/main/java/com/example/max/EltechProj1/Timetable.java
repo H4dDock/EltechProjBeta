@@ -13,28 +13,4 @@ public class Timetable {
     }
 
 
-    //Setters
-
-
-    /*public void SetDay(String Day) {
-        this.DayOfTheWeek = Day;
-    }
-
-    public void SetLessons(String[] Lessons) {
-        this.Lessons = Lessons;
-    }
-
-    public void SetTeacher(String Teacher) {
-        this.Teacher = Teacher;
-    }
-
-    public void SetLectureHall(String LectureHall) {
-        this.LectureHall = LectureHall;
-    }
-
-    public void SetType(String Type) {
-        this.Type = Type;
-    }*/
-
-
 }

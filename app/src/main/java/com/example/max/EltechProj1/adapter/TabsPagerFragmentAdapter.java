@@ -2,13 +2,16 @@ package com.example.max.EltechProj1.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.example.max.EltechProj1.fragment.ExampleFragment;
 
-public class TabsPagerFragmentAdapter extends FragmentPagerAdapter {
+import java.util.Calendar;
+
+public class TabsPagerFragmentAdapter extends FragmentStatePagerAdapter{
 
     private String [] tabs;
+    private int week = (Calendar.getInstance().getWeekYear()%2);
 
     public TabsPagerFragmentAdapter(FragmentManager fm) {
         super(fm);
@@ -22,29 +25,30 @@ public class TabsPagerFragmentAdapter extends FragmentPagerAdapter {
 
         };
     }
+
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
+    }
+
     @Override
     public CharSequence getPageTitle(int position) {
         return tabs[position];
     }
-    @Override
+
     public Fragment getItem(int position) {
-        switch (position) {
-            case 0:
-                return ExampleFragment.getInstance(position);
-            case 1:
-                return ExampleFragment.getInstance(position);
-            case 2:
-                return ExampleFragment.getInstance(position);
-            case 3:
-                return ExampleFragment.getInstance(position);
-            case 4:
-                return ExampleFragment.getInstance(position);
-            case 5:
-                return ExampleFragment.getInstance(position);
-        }
-        return null;
+       return ExampleFragment.newInstance(position,week);
     }
 
+    public void updateData(int week){
+        this.week = week;
+        notifyDataSetChanged();
+    }
+
+    public void updateDay(int day){
+        if(day != 1){
+        }
+    }
 
     @Override
     public int getCount() {

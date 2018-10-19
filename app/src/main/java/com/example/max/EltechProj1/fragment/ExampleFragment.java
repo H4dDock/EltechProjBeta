@@ -7,12 +7,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import android.widget.Toast;
+import android.graphics.Color;
 import com.example.max.EltechProj1.Lecture;
 import com.example.max.EltechProj1.R;
 import com.example.max.EltechProj1.Timetable;
@@ -27,32 +30,41 @@ public class ExampleFragment extends Fragment {
 
     private static final int LAYOUT = R.layout.fragment_example;
 
-
-    private TextView studyObjText[], teacherText[], lectureHallText[], timeText[];
+    private TextView studyObjText[], lessonTypeText[],  teacherText[], lectureHallText[], timeText[];
     private RelativeLayout relativelayout[];
     private Timetable[] arrTimeTable;
     private View view;
-    TextView butt;
-    int posF;
+    int valueDay, week;
 
-    public static ExampleFragment getInstance(int pos) {
+    public static ExampleFragment newInstance(int pos, int week) {
         Bundle args = new Bundle();
         args.putInt("position", pos);
+        args.putInt("week", week);
         ExampleFragment fragment = new ExampleFragment();
         fragment.setArguments(args);
 
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        valueDay = getArguments().getInt("position");
+        week = getArguments().getInt("week");
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(LAYOUT,container, false);
-        int value = getArguments().getInt("position");
+        //valueDay = getArguments().getInt("position");
+        //week = getArguments().getInt("week");
 
         BufferedReader reader = null;
 
         studyObjText = getStudyObjText();
+        lessonTypeText = getLessonTypeText();
         teacherText = getTeacherText();
         lectureHallText = getLectureHallText();
         timeText = getTimeText();
@@ -80,7 +92,6 @@ public class ExampleFragment extends Fragment {
 
         arrTimeTable = new Timetable[12];
         for (int i = 0, j = 1; i < 12 && j < timeTableString.length; ++i, ++j) {
-            //if(timeTableString[j] == "delim") j++;  //Check
             oneDay = timeTableString[j].split(delimeter);
 
             arrTimeTable[i] = new Timetable(oneDay[0]);
@@ -90,7 +101,11 @@ public class ExampleFragment extends Fragment {
             }
         }
 
-        SetDay(value,relativelayout,studyObjText,lectureHallText,teacherText,timeText);
+        if (week % 2 == 1){
+            valueDay+=6;
+        }
+
+        SetDay(valueDay,relativelayout,studyObjText, lessonTypeText, lectureHallText,teacherText,timeText);
 
         return view;
     }
@@ -112,15 +127,15 @@ public class ExampleFragment extends Fragment {
         return out;
     }
 
-    private ImageView[] getImageView(){
-        ImageView inProcess[] = new ImageView[6];
-        inProcess[0] = view.findViewById(R.id.imageView);
-        inProcess[1] = view.findViewById(R.id.imageView2);
-        inProcess[2] = view.findViewById(R.id.imageView3);
-        inProcess[3] = view.findViewById(R.id.imageView4);
-        inProcess[4] = view.findViewById(R.id.imageView5);
-        inProcess[5] = view.findViewById(R.id.imageView6);
-        return inProcess;
+    private TextView[] getLessonTypeText() {
+        TextView[] lessonTypeText = new TextView[6];
+        lessonTypeText[0] = view.findViewById(R.id.lessonType1);
+        lessonTypeText[1] = view.findViewById(R.id.lessonType2);
+        lessonTypeText[2] = view.findViewById(R.id.lessonType3);
+        lessonTypeText[3] = view.findViewById(R.id.lessonType4);
+        lessonTypeText[4] = view.findViewById(R.id.lessonType5);
+        lessonTypeText[5] = view.findViewById(R.id.lessonType6);
+        return lessonTypeText;
     }
 
     private TextView[] getTimeText() {
@@ -168,12 +183,17 @@ public class ExampleFragment extends Fragment {
         return studyObjText;
     }
 
-    private void SetDay(int numberOfDay, View[] relativelayout, TextView[] studyObjText,
+    private void SetDay(int numberOfDay, View[] relativelayout, TextView[] studyObjText, TextView lessonType[],
                         TextView[] lectureHallText, TextView[] teacherText, TextView[] timeText) {
         int countLesson = 0, realCountLesson = 0;
         if (!arrTimeTable[numberOfDay].lessons[countLesson].GetLessons().equals("null")) {
             relativelayout[realCountLesson].setVisibility(View.VISIBLE);
 
+            lessonType[realCountLesson].setText(arrTimeTable[numberOfDay].lessons[countLesson].GetLessonsType());
+            if(arrTimeTable[numberOfDay].lessons[countLesson].GetLessonsType().equals("Практика"))
+                lessonType[realCountLesson].setBackgroundResource(R.drawable.lesson_bg2);
+            else if (arrTimeTable[numberOfDay].lessons[countLesson].GetLessonsType().equals("Лабораторная"))
+                lessonType[realCountLesson].setBackgroundResource(R.drawable.lesson_bg3);
             studyObjText[realCountLesson].setText(arrTimeTable[numberOfDay].lessons[countLesson].GetLessons());
             lectureHallText[realCountLesson].setText(arrTimeTable[numberOfDay].lessons[countLesson].GetLectureHall());
             teacherText[realCountLesson].setText(arrTimeTable[numberOfDay].lessons[countLesson].GetTeacher());
@@ -185,6 +205,11 @@ public class ExampleFragment extends Fragment {
         if (!arrTimeTable[numberOfDay].lessons[countLesson].GetLessons().equals("null")) {
             relativelayout[realCountLesson].setVisibility(View.VISIBLE);
 
+            if(arrTimeTable[numberOfDay].lessons[countLesson].GetLessonsType().equals("Практика"))
+                lessonType[realCountLesson].setBackgroundResource(R.drawable.lesson_bg2);
+            else if (arrTimeTable[numberOfDay].lessons[countLesson].GetLessonsType().equals("Лабораторная"))
+                lessonType[realCountLesson].setBackgroundResource(R.drawable.lesson_bg3);
+            lessonType[realCountLesson].setText(arrTimeTable[numberOfDay].lessons[countLesson].GetLessonsType());
             studyObjText[realCountLesson].setText(arrTimeTable[numberOfDay].lessons[countLesson].GetLessons());
             lectureHallText[realCountLesson].setText(arrTimeTable[numberOfDay].lessons[countLesson].GetLectureHall());
             teacherText[realCountLesson].setText(arrTimeTable[numberOfDay].lessons[countLesson].GetTeacher());
@@ -196,6 +221,11 @@ public class ExampleFragment extends Fragment {
         if (!arrTimeTable[numberOfDay].lessons[countLesson].GetLessons().equals("null")) {
             relativelayout[realCountLesson].setVisibility(View.VISIBLE);
 
+            if(arrTimeTable[numberOfDay].lessons[countLesson].GetLessonsType().equals("Практика"))
+                lessonType[realCountLesson].setBackgroundResource(R.drawable.lesson_bg2);
+            else if (arrTimeTable[numberOfDay].lessons[countLesson].GetLessonsType().equals("Лабораторная"))
+                lessonType[realCountLesson].setBackgroundResource(R.drawable.lesson_bg3);
+            lessonType[realCountLesson].setText(arrTimeTable[numberOfDay].lessons[countLesson].GetLessonsType());
             studyObjText[realCountLesson].setText(arrTimeTable[numberOfDay].lessons[countLesson].GetLessons());
             lectureHallText[realCountLesson].setText(arrTimeTable[numberOfDay].lessons[countLesson].GetLectureHall());
             teacherText[realCountLesson].setText(arrTimeTable[numberOfDay].lessons[countLesson].GetTeacher());
@@ -207,6 +237,11 @@ public class ExampleFragment extends Fragment {
         if (!arrTimeTable[numberOfDay].lessons[countLesson].GetLessons().equals("null")) {
             relativelayout[realCountLesson].setVisibility(View.VISIBLE);
 
+            if(arrTimeTable[numberOfDay].lessons[countLesson].GetLessonsType().equals("Практика"))
+                lessonType[realCountLesson].setBackgroundResource(R.drawable.lesson_bg2);
+            else if (arrTimeTable[numberOfDay].lessons[countLesson].GetLessonsType().equals("Лабораторная"))
+                lessonType[realCountLesson].setBackgroundResource(R.drawable.lesson_bg3);
+            lessonType[realCountLesson].setText(arrTimeTable[numberOfDay].lessons[countLesson].GetLessonsType());
             studyObjText[realCountLesson].setText(arrTimeTable[numberOfDay].lessons[countLesson].GetLessons());
             lectureHallText[realCountLesson].setText(arrTimeTable[numberOfDay].lessons[countLesson].GetLectureHall());
             teacherText[realCountLesson].setText(arrTimeTable[numberOfDay].lessons[countLesson].GetTeacher());
@@ -218,6 +253,11 @@ public class ExampleFragment extends Fragment {
         if (!arrTimeTable[numberOfDay].lessons[countLesson].GetLessons().equals("null")) {
             relativelayout[realCountLesson].setVisibility(View.VISIBLE);
 
+            if(arrTimeTable[numberOfDay].lessons[countLesson].GetLessonsType().equals("Практика"))
+                lessonType[realCountLesson].setBackgroundResource(R.drawable.lesson_bg2);
+            else if (arrTimeTable[numberOfDay].lessons[countLesson].GetLessonsType().equals("Лабораторная"))
+                lessonType[realCountLesson].setBackgroundResource(R.drawable.lesson_bg3);
+            lessonType[realCountLesson].setText(arrTimeTable[numberOfDay].lessons[countLesson].GetLessonsType());
             studyObjText[realCountLesson].setText(arrTimeTable[numberOfDay].lessons[countLesson].GetLessons());
             lectureHallText[realCountLesson].setText(arrTimeTable[numberOfDay].lessons[countLesson].GetLectureHall());
             teacherText[realCountLesson].setText(arrTimeTable[numberOfDay].lessons[countLesson].GetTeacher());
@@ -229,6 +269,11 @@ public class ExampleFragment extends Fragment {
         if (!arrTimeTable[numberOfDay].lessons[countLesson].GetLessons().equals("null")) {
             relativelayout[realCountLesson].setVisibility(View.VISIBLE);
 
+            if(arrTimeTable[numberOfDay].lessons[countLesson].GetLessonsType().equals("Практика"))
+                lessonType[realCountLesson].setBackgroundResource(R.drawable.lesson_bg2);
+            else if (arrTimeTable[numberOfDay].lessons[countLesson].GetLessonsType().equals("Лабораторная"))
+                lessonType[realCountLesson].setBackgroundResource(R.drawable.lesson_bg3);
+            lessonType[realCountLesson].setText(arrTimeTable[numberOfDay].lessons[countLesson].GetLessonsType());
             studyObjText[realCountLesson].setText(arrTimeTable[numberOfDay].lessons[countLesson].GetLessons());
             lectureHallText[realCountLesson].setText(arrTimeTable[numberOfDay].lessons[countLesson].GetLectureHall());
             teacherText[realCountLesson].setText(arrTimeTable[numberOfDay].lessons[countLesson].GetTeacher());

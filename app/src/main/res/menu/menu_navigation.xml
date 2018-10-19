@@ -3,12 +3,16 @@
 
     <item
         android:orderInCategory="2"
-        android:title="@string/news_button1"
+        android:id="@+id/nav_butt_timeExam"
+        android:title="@string/time_exam"
+        android:onClick="onSettingsMenuClick"
         android:icon="@mipmap/ic_newspaper_black_24dp"/>
 
     <item
         android:orderInCategory="1"
+        android:id="@+id/schedule"
         android:title="@string/schedule"
+        android:onClick="onSettingsMenuClick"
         />
 
 </menu>
