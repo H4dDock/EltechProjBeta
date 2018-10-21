@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">Eltech</string>
     <string name="news_button1">Новости</string>
+    <string name="time_exam">Счетчик до сессии</string>
     <string name="schedule">Расписание</string>
+    <string name="notes">Заметки</string>
+
     <string name="Lesson_name">Название пары</string>
     <string name="Lecture_hall">Аудитория</string>
     <string name="Teacher">Преподаватель</string>
@@ -25,5 +28,8 @@
     <string name="Practice">Практика</string>
     <string name="Lecture">Лекция</string>
     <string name="Lab">Лабораторная</string>
+    <string name="title_activity_notes_activity">Notes_activity</string>
+    <string name="title_activity_rasp">Rasp</string>
+    <string name="examTime">Счетчик до сессии</string>
 
 </resources>
